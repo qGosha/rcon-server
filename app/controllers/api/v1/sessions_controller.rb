@@ -1,16 +1,12 @@
 module Api::V1
   class SessionsController < ApplicationController
-      def new
-      end
-    
       def create
         @user = User.find_by(email: params[:session][:email].downcase)
         if @user && @user.authenticate(params[:session][:password])
           log_in @user
-          render json: @user
           # if @user.activated
-          # params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
-          # redirect_back_or @user
+          params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
+          respond_with_current_user(@user)
           # else
           #   message  = "Account not activated. "
           #   message += "Check your email for the activation link."
@@ -18,15 +14,23 @@ module Api::V1
           #   redirect_to root_url
           # end
         else 
-          render json: @user.errors, status: :unauthorized
+          render :json => nil, :status => :unauthorized
           # flash.now[:danger] = 'Invalid email/password combination'
           # render 'new'
+        end
+      end
+
+      def is_logged_in?
+        if logged_in?
+          respond_with_current_user(@current_user)
+        else
+          render :json => false, :status => :unauthorized 
         end
       end
     
       def destroy
         log_out if logged_in?
-        redirect_to root_url
+        render :json => nil, :status => 200
       end
   end
 end

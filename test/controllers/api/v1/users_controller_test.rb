@@ -3,19 +3,28 @@ require 'test_helper'
 class UsersControllerTest < ActionDispatch::IntegrationTest
   def setup
     @first_user = users(:test)
+    log_in_as @first_user  
   end
 
   test "should get index" do
-    log_in_as @first_user  
     get '/api/v1/users'
     assert_response :success
   end
 
-  # test "shouldn't let update if not logged in" do
-  #   patch user_path(@first_user), params: { user: @first_user }
-  #   assert_redirected_to login_path
-  #   assert flash[:danger]
-  # end
+  test "shouldn update user" do
+    patch "/api/v1/users/#{@first_user.id}", params: { user: { email: 'newemail@qwerty.com' } }
+    assert_response :success
+  end
+
+  test "shouldn create a new user" do
+    post "/api/v1/users/", params: { user: { email: 'newemail@qwerty.com', password: '123456' } }
+    assert_response :success
+  end
+
+  test "shouldn destroy a user" do
+    delete "/api/v1/users/#{@first_user.id}"
+    assert_response :success
+  end
 
   # test "shouldn't let edit if not logged in" do
   #   get edit_user_path(@first_user)

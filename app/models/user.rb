@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  attr_accessor :remember_token, :reset_token
+  has_one :client, dependent: :destroy
+  has_one :realtor, dependent: :destroy
   has_secure_password
   before_save :downcase_email
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -7,6 +10,9 @@ class User < ApplicationRecord
   uniqueness: { case_sensitive: false }
   # we can allow nil since has_secure_password has it's own validation
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  enum role: [:realtor, :client]
+  validates :role, presence: true
+
   # Returns the hash digest of the given string.
   class << self  
     def digest(string)
@@ -19,7 +25,16 @@ class User < ApplicationRecord
     def new_token
         SecureRandom.urlsafe_base64
     end
-  end 
+  end
+
+  def remember
+    self.remember_token = User.new_token
+    update_attribute(:remember_digest, User.digest(remember_token))
+  end
+
+  def forget
+    update_attribute(:remember_digest, nil)
+  end
 
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")

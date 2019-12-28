@@ -16,6 +16,10 @@ class ApplicationController < ActionController::API
       end
     end
 
+    def respond_with_current_user(user)
+        render :json => user.as_json(only: [:email, :role]), :status => 200
+    end
+
     def set_csrf_cookie
         cookies["CSRF-TOKEN"] = form_authenticity_token
     end
