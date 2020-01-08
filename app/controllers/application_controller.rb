@@ -23,4 +23,16 @@ class ApplicationController < ActionController::API
     def set_csrf_cookie
         cookies["CSRF-TOKEN"] = form_authenticity_token
     end
+
+    def is_client
+      unless current_user.role == 'client'
+        render json: false, status: :unauthorized
+      end
+    end
+
+    def is_realtor
+      unless current_user.role == 'realtor'
+        render json: false, status: :unauthorized
+      end
+    end
 end

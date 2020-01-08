@@ -12,6 +12,9 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
   enum role: [:realtor, :client]
   validates :role, presence: true
+  accepts_nested_attributes_for :client
+  accepts_nested_attributes_for :realtor
+
 
   # Returns the hash digest of the given string.
   class << self  
