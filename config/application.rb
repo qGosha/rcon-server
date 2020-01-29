@@ -39,7 +39,7 @@ module IdeaApi
         origins 'http://localhost:8080'
         resource '*', 
           :headers => :any, 
-          :methods => [:get, :post, :put, :delete, :options], 
+          :methods => [:get, :post, :put, :delete, :options, :patch], 
           :credentials => true
       end
     end

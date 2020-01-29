@@ -17,7 +17,11 @@ class ApplicationController < ActionController::API
     end
 
     def respond_with_current_user(user)
-        render :json => user.as_json(only: [:email, :role]), :status => 200
+        if user.role == 'client'
+          render :json => user.as_json(only: [:email, :role, :id], include: { client: { except:[:created_at, :updated_at] } }), :status => 200
+        else
+          render :json => user.as_json(only: [:email, :role, :id], include: { realtor: { except:[:created_at, :updated_at] } }), :status => 200
+        end
     end
 
     def set_csrf_cookie

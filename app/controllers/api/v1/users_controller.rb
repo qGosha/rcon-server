@@ -3,13 +3,6 @@ module Api::V1
     before_action :set_user, only: [:show, :update, :destroy]
     before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
 
-    # GET /users
-    def index
-      @users = User.all
-
-      render :json => @users
-    end
-
     # GET /users/1
     def show
       respond_with_current_user(@user)
@@ -50,21 +43,24 @@ module Api::V1
         @user = User.find(params[:id])
       end
 
-      # Only allow a trusted parameter "white list" through.
       def create_user_params
         main_attr = [ :email, :password, :role ]
-        client_attr = { client_attributes: [:first_name] }
-        realtor_attr = { realtor_attributes: [:first_name, :last_name] }
-        if params[:role] == 'realtor'
-          main_attr << realtor_attr
-        elsif params[:role] == 'client'
-          main_attr << client_attr
-        end
-        params.permit(main_attr)
+        params.permit(main_attr << spicific_role_params(params[:role]))
       end
 
       def update_user_params
-        params.permit(:email, :password)
+        main_attr = [ :email, :password ]
+        params.permit(main_attr << spicific_role_params(@user.role))
+      end
+
+      def spicific_role_params(role)
+        client_attr = { client_attributes: [:first_name, :id] }
+        realtor_attr = { realtor_attributes: [:first_name, :last_name, :id] }
+        if role == 'realtor'
+          realtor_attr
+        elsif role == 'client'
+          client_attr
+        end
       end
   end
 end
