@@ -6,7 +6,7 @@ module Api::V1
           log_in @user
           # if @user.activated
           params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
-          respond_with_current_user(@user)
+          render 'users/show'
           # else
           #   message  = "Account not activated. "
           #   message += "Check your email for the activation link."
@@ -22,7 +22,8 @@ module Api::V1
 
       def is_logged_in?
         if logged_in?
-          respond_with_current_user(@current_user)
+          @user = current_user
+          render 'users/show'
         else
           render :json => false, :status => :unauthorized 
         end

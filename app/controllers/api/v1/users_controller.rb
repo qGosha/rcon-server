@@ -4,16 +4,16 @@ module Api::V1
     before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
 
     # GET /users/1
-    def show
-      respond_with_current_user(@user)
-    end
+    # def show
+    #   render 'users/show'
+    # end
 
     # POST /users
     def create
       @user = User.new(create_user_params)
       if @user.save
         log_in @user
-        respond_with_current_user(@user)
+        render 'users/show'
       else
         render :json => @user.errors.full_messages, :status => :unprocessable_entity
       end
@@ -22,7 +22,7 @@ module Api::V1
     # PATCH/PUT /users/1
     def update
       if @user.update(update_user_params)
-        respond_with_current_user(@user)
+        render 'users/show'
       else
         render :json => @user.errors.full_messages, :status => :unprocessable_entity
       end
@@ -31,7 +31,8 @@ module Api::V1
     # DELETE /users/1
     def destroy
       if @user.destroy
-        render :json => nil, :status => :ok
+        log_out if logged_in?
+        render :json => true, :status => :ok
       else
         render :json => @user.errors.full_messages, :status => :unprocessable_entity
       end
@@ -44,23 +45,11 @@ module Api::V1
       end
 
       def create_user_params
-        main_attr = [ :email, :password, :role ]
-        params.permit(main_attr << spicific_role_params(params[:role]))
+        params.permit(:email, :password, :password_confirmation, :role, :first_name, :last_name)
       end
 
       def update_user_params
-        main_attr = [ :email, :password ]
-        params.permit(main_attr << spicific_role_params(@user.role))
-      end
-
-      def spicific_role_params(role)
-        client_attr = { client_attributes: [:first_name, :id] }
-        realtor_attr = { realtor_attributes: [:first_name, :last_name, :id] }
-        if role == 'realtor'
-          realtor_attr
-        elsif role == 'client'
-          client_attr
-        end
+        params.permit(:email, :password, :password_confirmation, :first_name, :last_name)
       end
   end
 end

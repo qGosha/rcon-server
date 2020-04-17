@@ -16,14 +16,6 @@ class ApplicationController < ActionController::API
       end
     end
 
-    def respond_with_current_user(user)
-        if user.role == 'client'
-          render :json => user.as_json(only: [:email, :role, :id], include: { client: { except:[:created_at, :updated_at] } }), :status => 200
-        else
-          render :json => user.as_json(only: [:email, :role, :id], include: { realtor: { except:[:created_at, :updated_at] } }), :status => 200
-        end
-    end
-
     def set_csrf_cookie
         cookies["CSRF-TOKEN"] = form_authenticity_token
     end
@@ -36,6 +28,12 @@ class ApplicationController < ActionController::API
 
     def is_realtor
       unless current_user.role == 'realtor'
+        render json: false, status: :unauthorized
+      end
+    end
+
+    def has_realtor_profile
+      unless !current_user.realtor_profile.nil?
         render json: false, status: :unauthorized
       end
     end

@@ -1,0 +1,38 @@
+<p>Hi, <%=@current_user.first_name%> <%=@current_user.last_name%></p>
+
+<p>You have a new client interested in working with you. See the information below:</p>
+
+<table>
+    <tr>
+        <th>Type</th>
+        <th>Phone number</th>
+        <th>Email</th>
+        <th>State</th>
+        <th>City</th>
+        <th>Zip</th>
+        <th>Street</th>
+        <th>Description</th>
+    <tr>
+    <% @orders.each do |order| %>
+    <tr>
+        <td><%=order.order_type == 1 ? 'Sell' : 'Buy'%></td>
+        <td><%=order.tel%></td>
+        <td><%=order.email%></td>
+        <td><%=order.address.state%></td>
+        <td><%=order.address.city%></td>
+        <td><%=order.address.zip%></td>
+        <td><%=order.address.street%></td>
+        <td><%=order.description%></td>
+    <tr>
+<% end %>
+</table>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+    padding: 3px;
+}
+</style>
