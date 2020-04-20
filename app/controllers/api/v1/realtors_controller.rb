@@ -13,6 +13,7 @@ module Api::V1
                 @total = User.realtors.size
             end
             @rated_by_me = current_user.given_rating.map(&:realtor_id) & @realtors.map(&:id)
+            @responded_or_sent_orders = RespondedOrSentOrder.where(realtor_id: @realtors.map(&:id), order_id: current_user.orders.map(&:id)).map(&:realtor_id)
             render "realtors/index"
         end
 

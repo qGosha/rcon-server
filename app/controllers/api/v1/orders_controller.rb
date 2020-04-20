@@ -1,9 +1,9 @@
 module Api::V1
     class OrdersController < ApplicationController
         before_action :logged_in_user
-        before_action :is_client, only: [:create, :destroy, :update, :my_orders]
-        before_action :is_realtor, only: [:index]
-        before_action :has_realtor_profile, only: [:index]
+        before_action :is_client, only: [:create, :destroy, :update, :my_orders, :send_my_orders]
+        before_action :is_realtor, only: [:index, :responded_by_me_orders]
+        before_action :has_realtor_profile, only: [:index, :responded_by_me_orders]
 
         def index
             if search_params_present?
@@ -34,8 +34,24 @@ module Api::V1
             render "orders/index"
         end
 
+        def send_my_orders
+            orders = current_user.orders
+            realtor = User.realtors.find_by(id: send_params[:realtor_id])
+            email = realtor&.realtor_profile&.email || realtor.email
+            begin
+                orders.each do |order|
+                    RespondedOrSentOrder.create({order_id: order.id, realtor_id: realtor.id})
+                end
+            rescue
+                render :json => false, :status => :unprocessable_entity
+            end
+            EmailExchangerMailer.send_client_orders(orders, email, realtor).deliver_now
+
+            render :json => { realtor_id: realtor.id }, :status => :ok
+        end
+
         def responded_by_me_orders
-            responded_order_ids = RealtorRespondedOrder.where(realtor_id: current_user.id)
+            responded_order_ids = RespondedOrSentOrder.where(realtor_id: current_user.id)
             @orders = Order.where(id: responded_order_ids)
             render "orders/index"
         end
@@ -88,7 +104,11 @@ module Api::V1
         end
 
         def responded_to_orders (orders)
-            RealtorRespondedOrder.where(realtor_id: current_user.id, order_id: orders.map(&:id)).map(&:order_id)
+            RespondedOrSentOrder.where(realtor_id: current_user.id, order_id: orders.map(&:id)).map(&:order_id)
+        end
+
+        def send_params
+            params.permit(:realtor_id)
         end
     end
 end

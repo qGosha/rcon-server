@@ -83,14 +83,14 @@ ActiveRecord::Schema.define(version: 2020_04_04_172611) do
     t.index ["realtor_id"], name: "index_realtor_ratings_on_realtor_id"
   end
 
-  create_table "realtor_responded_orders", force: :cascade do |t|
+  create_table "responded_or_sent_orders", force: :cascade do |t|
     t.integer "order_id"
     t.integer "realtor_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["order_id", "realtor_id"], name: "index_realtor_responded_orders_on_order_id_and_realtor_id", unique: true
-    t.index ["order_id"], name: "index_realtor_responded_orders_on_order_id"
-    t.index ["realtor_id"], name: "index_realtor_responded_orders_on_realtor_id"
+    t.index ["order_id", "realtor_id"], name: "index_responded_or_sent_orders_on_order_id_and_realtor_id", unique: true
+    t.index ["order_id"], name: "index_responded_or_sent_orders_on_order_id"
+    t.index ["realtor_id"], name: "index_responded_or_sent_orders_on_realtor_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,4 +1,4 @@
-class RealtorRespondedOrder < ApplicationRecord
+class RespondedOrSentOrder < ApplicationRecord
     validates :order_id, presence: true
     validates :realtor_id, presence: true
 

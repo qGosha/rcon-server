@@ -6,9 +6,9 @@ class EmailExchangerMailer < ApplicationMailer
         mail to: order.email, subject: "#{@realtor.first_name} #{@realtor.last_name} just responded to your order"
     end
 
-    def send_client_orders(orders, email, current_user)
+    def send_client_orders(orders, email, realtor)
         @orders = orders
-        @current_user = current_user
+        @realtor = realtor
         mail to: email, subject: "Someone is interested in working with you"
     end
 end

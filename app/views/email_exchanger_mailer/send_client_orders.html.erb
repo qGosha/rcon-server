@@ -1,8 +1,8 @@
-<p>Hi, <%=@current_user.first_name%> <%=@current_user.last_name%></p>
+<p>Hi, <%=@realtor.first_name%> <%=@realtor.last_name%></p>
 
 <p>You have a new client interested in working with you. See the information below:</p>
 
-<table>
+<table id="mail-orders-table">
     <tr>
         <th>Type</th>
         <th>Phone number</th>
@@ -28,11 +28,15 @@
 </table>
 
 <style>
-table, th, td {
+#mail-orders-table {
+    border-spacing: 2px;
+    border-collapse: collapse;
+}
+#mail-orders-table th, td {
   border: 1px solid black;
   border-collapse: collapse;
 }
-th, td {
+#mail-orders-table th, td {
     padding: 3px;
 }
 </style>

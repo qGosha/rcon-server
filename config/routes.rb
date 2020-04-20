@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     get 'search_realtors', to: 'realtors#search'
     get 'responded_orders', to: 'orders#responded_by_me_orders'
     post 'send_realtor_profile', to: 'realtor_profiles#send_realtor_profile'
+    post 'send_my_orders', to: 'orders#send_my_orders'
   end
 end
 end

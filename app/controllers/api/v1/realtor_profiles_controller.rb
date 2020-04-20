@@ -6,7 +6,7 @@ module Api::V1
         def send_realtor_profile
             order = Order.find_by(id: send_params[:order_id])
             user = current_user
-            if RealtorRespondedOrder.create({order_id: order.id, realtor_id: user.id})
+            if RespondedOrSentOrder.create({order_id: order.id, realtor_id: user.id})
                 EmailExchangerMailer.send_realtor_profile(user, order).deliver_now
 
                 render :json => { order_id: order.id }, :status => :ok
