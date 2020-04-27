@@ -37,17 +37,15 @@ ActiveRecord::Schema.define(version: 2020_04_04_172611) do
   end
 
   create_table "addresses", force: :cascade do |t|
-    t.bigint "order_id"
+    t.bigint "realtor_profile_id"
     t.string "city"
     t.string "state"
     t.string "zip"
     t.string "street"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "realtor_profile_id"
     t.float "latitude"
     t.float "longitude"
-    t.index ["order_id"], name: "index_addresses_on_order_id"
     t.index ["realtor_profile_id"], name: "index_addresses_on_realtor_profile_id"
   end
 
@@ -105,7 +103,6 @@ ActiveRecord::Schema.define(version: 2020_04_04_172611) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "addresses", "orders"
   add_foreign_key "addresses", "realtor_profiles"
   add_foreign_key "orders", "users"
   add_foreign_key "realtor_profiles", "users"
