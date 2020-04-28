@@ -40,7 +40,7 @@ module IdeaApi
         resource '*', 
           :headers => :any, 
           :methods => [:get, :post, :put, :delete, :options, :patch], 
-          :credentials => true
+          # :credentials => true
       end
     end
   end
