@@ -36,11 +36,11 @@ module IdeaApi
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
+        origins 'http://172.24.12.106:8080'
         resource '*', 
           :headers => :any, 
           :methods => [:get, :post, :put, :delete, :options, :patch], 
-          # :credentials => true
+          :credentials => true
       end
     end
   end
