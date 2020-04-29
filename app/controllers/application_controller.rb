@@ -37,4 +37,8 @@ class ApplicationController < ActionController::API
         render json: false, status: :unauthorized
       end
     end
+
+    def frontend_index_html
+      render file: 'public/index.html'
+    end
 end

@@ -17,4 +17,7 @@ Rails.application.routes.draw do
     post 'send_my_orders', to: 'orders#send_my_orders'
   end
 end
+ get '*path', to: 'application#frontend_index_html', constraints: lambda { |request|
+   !request.xhr? && request.format.html?
+ }
 end
